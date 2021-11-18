@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { withRouter, NavLink } from 'react-router-dom';
-import { Menu, Dropdown, Header } from 'semantic-ui-react';
+import { Menu, Dropdown, Header, Image } from 'semantic-ui-react';
 import { Roles } from 'meteor/alanning:roles';
 
 /** The NavBar appears at the top of every page. Rendered by the App Layout component. */
@@ -11,13 +11,37 @@ class NavBar extends React.Component {
   render() {
     const menuStyle = { marginBottom: '10px' };
     return (
-      <Menu style={menuStyle} attached="top" borderless inverted>
+      <Menu style={menuStyle} attached="top" borderless inverted className="ui stackable menu">
+        <Menu.Item as={NavLink} activeClassName="" exact to="/">
+          <Image src='images/meteor-logo.png' size='small' alt='Kahukai app logo'/>
+        </Menu.Item>
+        {Roles.userIsInRole(Meteor.userId(), 'admin') ? (
+          <Menu.Item as={NavLink} activeClassName="active" exact to="/birdadminlist" key='birdadminlist'><Header as="h4">Bird Sightings</Header></Menu.Item>
+        ) : ''}
+        {Roles.userIsInRole(Meteor.userId(), 'admin') ? (
+          <Menu.Item as={NavLink} activeClassName="active" exact to="/sealadminlist" key='sealadminlist'><Header as="h4">Seal Sightings</Header></Menu.Item>
+        ) : ''}
+        {Roles.userIsInRole(Meteor.userId(), 'admin') ? (
+          <Menu.Item as={NavLink} activeClassName="active" exact to="/turtleadminlist" key='turtleadminlist'><Header as="h4">Turtle Sightings</Header></Menu.Item>
+        ) : ''}
+
         <Menu.Item as={NavLink} activeClassName="" exact to="/">
           <Header inverted as='h1'>meteor-application-template</Header>
         </Menu.Item>
         {this.props.currentUser ? (
           [<Menu.Item as={NavLink} activeClassName="active" exact to="/add" key='add'>Add Stuff</Menu.Item>,
             <Menu.Item as={NavLink} activeClassName="active" exact to="/list" key='list'>List Stuff</Menu.Item>]
+        ) : ''}
+        {this.props.currentUser ? (
+            [<Menu.Item as={NavLink} position='left' activeClassName="active" exact to="/distress" key='distress'>
+              <Header as="h4">Distress Report</Header>
+            </Menu.Item>,
+              <Menu.Item as={NavLink} activeClassName="active" exact to="/sighting" key='sighting'>
+                <Header as="h4">Sighting Report</Header>
+              </Menu.Item>,
+              <Menu.Item as={NavLink} activeClassName="active" exact to="/infodistress" key='infodistress'>
+                <Header as="h4">Info</Header>
+              </Menu.Item>]
         ) : ''}
         {Roles.userIsInRole(Meteor.userId(), 'admin') ? (
           <Menu.Item as={NavLink} activeClassName="active" exact to="/admin" key='admin'>Admin</Menu.Item>
